@@ -41,14 +41,14 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void initialize() {
-        updateStatus(ThingStatus.INITIALIZING);
         logger.info("Bridge is initializing: {}", getThing().getUID());
 
         try {
             thingRegistry = fetchThingRegistry();
             createPlants();
+            updateStatus(ThingStatus.ONLINE);
         } catch (Exception e) {
-            updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.HANDLER_INITIALIZING_ERROR, e.getMessage());
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_INITIALIZING_ERROR, e.getMessage());
             logger.error("Unable to fetch ThingRegistry.", e);
         }
     }
@@ -66,7 +66,7 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
 
     private void createPlants() {
 
-        String plantId = "ID from iSolarCloud";
+        String plantId = "id-from-sungrow";
         ThingUID thingUID = new ThingUID(SungrowBindingConstants.THING_TYPE_PLANT.getBindingId(), getThing().getUID(),
                 plantId);
 
