@@ -12,24 +12,27 @@
  */
 package org.openhab.binding.sungrow.internal;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link SungrowConfiguration} class contains fields mapping thing configuration parameters.
  *
  * @author Christian Kemper - Initial contribution
  */
+@NonNullByDefault
 public class SungrowConfiguration {
 
-    private String hostname;
+    private String hostname = "";
 
-    private String appKey;
+    private String appKey = "";
 
-    private String appSecret;
+    private String appSecret = "";
 
-    private String username;
+    private String username = "";
 
-    private String password;
+    private String password = "";
 
-    private Integer interval;
+    private Integer interval = 30;
 
     public String getHostname() {
         return hostname;
