@@ -49,13 +49,11 @@ public class SungrowHandlerFactory extends BaseThingHandlerFactory {
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if(THING_TYPE_PLANT.equals(thingTypeUID)) {
+        if (THING_TYPE_PLANT.equals(thingTypeUID)) {
             return new SungrowPlantHandler(thing);
-        }
-        else if (THING_TYPE_BRIDGE.equals(thingTypeUID)) {
-            return new SungrowBridgeHandler((Bridge)thing);
-        }
-        else {
+        } else if (THING_TYPE_BRIDGE.equals(thingTypeUID)) {
+            return new SungrowBridgeHandler((Bridge) thing);
+        } else {
             return null;
         }
     }
