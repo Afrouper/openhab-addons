@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2025 Contributors to the openHAB project
+ * Copyright (c) 2010-2024 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -49,7 +49,7 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
             createPlants();
         } catch (Exception e) {
             updateStatus(ThingStatus.UNINITIALIZED, ThingStatusDetail.HANDLER_INITIALIZING_ERROR, e.getMessage());
-            logger.error(e.getMessage(), e);
+            logger.error("Unable to fetch ThingRegistry.", e);
         }
     }
 
