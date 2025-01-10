@@ -67,8 +67,7 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
     private void createPlants() {
 
         String plantId = "ID from iSolarCloud";
-        ThingUID thingUID = new ThingUID(SungrowBindingConstants.THING_TYPE_PLANT.getBindingId(),
-                getThing().getUID(),
+        ThingUID thingUID = new ThingUID(SungrowBindingConstants.THING_TYPE_PLANT.getBindingId(), getThing().getUID(),
                 plantId);
 
         if (thingRegistry.get(thingUID) != null) {
@@ -77,9 +76,7 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
         }
 
         Thing plant = ThingBuilder.create(SungrowBindingConstants.THING_TYPE_PLANT, thingUID)
-                .withBridge(getThing().getUID())
-                .withLabel("Label for Plant")
-                .build();
+                .withBridge(getThing().getUID()).withLabel("Label for Plant").build();
 
         try {
             thingRegistry.add(plant);

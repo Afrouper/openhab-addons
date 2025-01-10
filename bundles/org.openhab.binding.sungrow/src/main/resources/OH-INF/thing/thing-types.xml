@@ -46,8 +46,8 @@
 
 	<thing-type id="sungrow-plant">
 		<supported-bridge-type-refs>
-			<bridge-type-ref id="sungrow-bridge" />
-        </supported-bridge-type-refs>
+			<bridge-type-ref id="sungrow-bridge"/>
+		</supported-bridge-type-refs>
 
 		<label>Sungrow Plant</label>
 		<description>Sungrow Plant as defined in iSolarCloud</description>
