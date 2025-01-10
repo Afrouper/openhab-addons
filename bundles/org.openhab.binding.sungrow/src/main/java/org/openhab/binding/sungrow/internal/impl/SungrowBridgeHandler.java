@@ -13,6 +13,7 @@
 package org.openhab.binding.sungrow.internal.impl;
 
 import org.openhab.binding.sungrow.internal.SungrowBindingConstants;
+import org.openhab.binding.sungrow.internal.SungrowConfiguration;
 import org.openhab.core.thing.*;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
@@ -35,6 +36,8 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
 
     private ThingRegistry thingRegistry;
 
+    private ApiClient apiClient;
+
     public SungrowBridgeHandler(Bridge bridge) {
         super(bridge);
     }
@@ -45,8 +48,9 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
 
         try {
             thingRegistry = fetchThingRegistry();
-            createPlants();
-            updateStatus(ThingStatus.ONLINE);
+            apiClient = new ApiClient(getConfigAs(SungrowConfiguration.class));
+            updateStatus(ThingStatus.UNKNOWN);
+            scheduler.execute(this::createPlants);
         } catch (Exception e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_INITIALIZING_ERROR, e.getMessage());
             logger.error("Unable to fetch ThingRegistry.", e);
@@ -64,25 +68,34 @@ public class SungrowBridgeHandler extends BaseBridgeHandler {
         logger.info("Bridge disposed.");
     }
 
+    ApiClient getApiClient() {
+        return apiClient;
+    }
+
     private void createPlants() {
-
-        String plantId = "id-from-sungrow";
-        ThingUID thingUID = new ThingUID(SungrowBindingConstants.THING_TYPE_PLANT.getBindingId(), getThing().getUID(),
-                plantId);
-
-        if (thingRegistry.get(thingUID) != null) {
-            logger.warn("Plant Thing with UID {} already exists. Skipping creation.", thingUID);
-            return;
-        }
-
-        Thing plant = ThingBuilder.create(SungrowBindingConstants.THING_TYPE_PLANT, thingUID)
-                .withBridge(getThing().getUID()).withLabel("Label for Plant").build();
-
+        ThingUID thingUID = null;
         try {
+            apiClient.initialize();
+            updateStatus(ThingStatus.ONLINE);
+
+            String plantId = "id-from-sungrow";
+            thingUID = new ThingUID(SungrowBindingConstants.THING_TYPE_PLANT.getBindingId(), getThing().getUID(),
+                    plantId);
+
+            if (thingRegistry.get(thingUID) != null) {
+                logger.warn("Plant Thing with UID {} already exists. Skipping creation.", thingUID);
+                return;
+            }
+
+            Thing plant = ThingBuilder.create(SungrowBindingConstants.THING_TYPE_PLANT, thingUID)
+                    .withBridge(getThing().getUID()).withLabel("Label for Plant").build();
+
             thingRegistry.add(plant);
             logger.info("Successfully registered new Plant Thing: {}", thingUID);
+
         } catch (Exception e) {
             logger.error("Failed to register Plant Thing: {}", thingUID, e);
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_INITIALIZING_ERROR, e.getMessage());
         }
     }
 

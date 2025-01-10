@@ -14,12 +14,7 @@ package org.openhab.binding.sungrow.internal.impl;
 
 import static org.openhab.binding.sungrow.internal.SungrowBindingConstants.*;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.sungrow.internal.SungrowConfiguration;
-import org.openhab.core.thing.ChannelUID;
-import org.openhab.core.thing.Thing;
-import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.*;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
@@ -32,13 +27,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author Christian Kemper - Initial contribution
  */
-@NonNullByDefault
 public class SungrowPlantHandler extends BaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SungrowPlantHandler.class);
 
-    @Nullable
-    private SungrowConfiguration config;
+    private ApiClient apiClient;
 
     public SungrowPlantHandler(Thing thing) {
         super(thing);
@@ -62,7 +55,16 @@ public class SungrowPlantHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        config = getConfigAs(SungrowConfiguration.class);
+        Bridge bridge = getBridge();
+        if (bridge != null) {
+            if (bridge.getHandler() instanceof SungrowBridgeHandler) {
+                apiClient = ((SungrowBridgeHandler) bridge.getHandler()).getApiClient();
+                System.out.println(apiClient);
+                updateStatus(ThingStatus.ONLINE);
+                return;
+            }
+        }
+        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_UNINITIALIZED);
 
         // TODO: Initialize the handler.
         // The framework requires you to return from this method quickly, i.e. any network access must be done in
